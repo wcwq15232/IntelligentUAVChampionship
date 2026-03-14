@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- ========== 可配置参数 ========== -->
+    <!-- PX4 SITL 配置 -->
+    <arg name="est" default="ekf2"/>
+    <arg name="vehicle" default="iris"/>
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+    <arg name="R" default="0"/>
+    <arg name="P" default="0"/>
+    <arg name="Y" default="0"/>
+    
+    <!-- MAVROS 连接配置 -->
+    <arg name="fcu_url" default="udp://:14540@127.0.0.1:14557"/>
+    <arg name="gcs_url" default=""/>
+    <arg name="tgt_system" default="1"/>
+    <arg name="tgt_component" default="1"/>
+    
+    
+    <!-- ========== 2. 创建无人机命名空间 ========== -->
+    <group ns="uav">
+        <!-- 2.1 启动PX4 SITL实例 -->
+        <include file="$(find px4)/launch/single_vehicle_spawn.launch">
+            <arg name="x" value="$(arg x)"/>
+            <arg name="y" value="$(arg y)"/>
+            <arg name="z" value="$(arg z)"/>
+            <arg name="R" value="$(arg R)"/>
+            <arg name="P" value="$(arg P)"/>
+            <arg name="Y" value="$(arg Y)"/>
+            <arg name="vehicle" value="$(arg vehicle)"/>
+            <arg name="est" value="$(arg est)"/>
+            <arg name="mavlink_udp_port" value="18570"/>
+            <arg name="mavlink_tcp_port" value="4560"/>
+        </include>
+        
+        <!-- 2.2 启动MAVROS节点 -->
+        <include file="$(find mavros)/launch/px4.launch">
+            <arg name="fcu_url" value="$(arg fcu_url)"/>
+            <arg name="gcs_url" value="$(arg gcs_url)"/>
+            <arg name="tgt_system" value="$(arg tgt_system)"/>
+            <arg name="tgt_component" value="$(arg tgt_component)"/>
+        </include>
+    </group>
+    
+    <node pkg="px4" type="px4" name="px4" output="screen" args="$(find px4)/etc/init.d-posix/rcS $(find px4)">
+        <env name="PX4_SIM_MODEL" value="$(arg vehicle)"/>
+    </node>
+</launch>

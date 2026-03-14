@@ -47,12 +47,12 @@ namespace ego_planner
     ros::Duration t_init, t_opt;
 
     static int count = 0;
-    //cout << "\033[47;30m\n[" << t_start << "] Drone " << pp_.drone_id << " Replan " << count++ << "\033[0m" << endl;
-    // cout.precision(3);
-    // cout << "start: " << start_pt.transpose() << ", " << start_vel.transpose() << "\ngoal:" << local_target_pt.transpose() << ", " << local_target_vel.transpose()
-    //      << endl;
-    // if ((start_pt - local_target_pt).norm() < 0.2)
-    //   cout << "Close to goal" << endl;
+    // cout << "\033[47;30m\n[" << t_start << "] Drone " << pp_.drone_id << " Replan " << count++ << "\033[0m" << endl;
+    //  cout.precision(3);
+    //  cout << "start: " << start_pt.transpose() << ", " << start_vel.transpose() << "\ngoal:" << local_target_pt.transpose() << ", " << local_target_vel.transpose()
+    //       << endl;
+    //  if ((start_pt - local_target_pt).norm() < 0.2)
+    //    cout << "Close to goal" << endl;
 
     /*** STEP 1: INIT ***/
     ploy_traj_opt_->setIfTouchGoal(touch_goal);
@@ -282,7 +282,7 @@ namespace ego_planner
       double t_to_lc_end = traj_.local_traj.duration - passed_t_on_lctraj;
       if (t_to_lc_end < 0)
       {
-        //ROS_INFO("t_to_lc_end < 0, exit and wait for another call.");
+        // ROS_INFO("t_to_lc_end < 0, exit and wait for another call.");
         return false;
       }
       double t_to_lc_tgt = t_to_lc_end +
@@ -360,7 +360,7 @@ namespace ego_planner
 
     if ((global_end_pt - local_target_pos).norm() < (pp_.max_vel_ * pp_.max_vel_) / (2 * pp_.max_acc_))
     {
-      //std::cout<<"ffffffff"<<std::endl;
+      // std::cout<<"ffffffff"<<std::endl;
       local_target_vel = traj_.global_traj.traj.getVel(t - traj_.global_traj.global_start_time);
     }
     else
@@ -416,7 +416,7 @@ namespace ego_planner
     {
       if ((traj_.local_traj.traj.getPos(t - my_traj_start_time) -
            traj_.swarm_traj[drone_id].traj.getPos(t - other_traj_start_time))
-              .norm() < (getSwarmClearance() + traj_.swarm_traj[drone_id].des_clearance) )
+              .norm() < (getSwarmClearance() + traj_.swarm_traj[drone_id].des_clearance))
       {
         return true;
       }
@@ -456,10 +456,10 @@ namespace ego_planner
 
     globalMJO.reset(headState, tailState, waypoints.size());
 
-    double des_vel =end_vel.norm();
-    if(des_vel > 8)
+    double des_vel = end_vel.norm();
+    if (des_vel > 8)
     {
-      des_vel =8;
+      des_vel = 8;
     }
     Eigen::VectorXd time_vec(waypoints.size());
 
@@ -475,9 +475,7 @@ namespace ego_planner
 
       if (globalMJO.getTraj().getMaxVelRate() < pp_.max_vel_ &&
           start_vel.norm() < pp_.max_vel_ &&
-          end_vel.norm() < pp_.max_vel_
-          && globalMJO.getTraj().getMaxAccRate() < pp_.max_acc_
-)
+          end_vel.norm() < pp_.max_vel_ && globalMJO.getTraj().getMaxAccRate() < pp_.max_acc_)
       {
         break;
       }
@@ -491,7 +489,7 @@ namespace ego_planner
              << tailState << endl;
       }
 
-     // des_vel *= 0.9;
+      // des_vel *= 0.9;
     }
 
     auto time_now = ros::Time::now();

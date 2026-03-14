@@ -9,7 +9,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 find_package(Eigen3 REQUIRED)
 find_package(PCL 1.7 REQUIRED)
 
-find_package(OpenCV REQUIRED)
+set(OpenCV_DIR /usr/lib/x86_64-linux-gnu/cmake/opencv4/)
+find_package(OpenCV 4.2 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 find_package(catkin REQUIRED COMPONENTS

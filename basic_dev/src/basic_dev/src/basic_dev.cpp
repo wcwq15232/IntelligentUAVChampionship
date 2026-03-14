@@ -44,9 +44,6 @@ BasicDev::BasicDev(ros::NodeHandle *nh)
     vel_publisher = nh->advertise<airsim_ros::VelCmd>("airsim_node/drone_1/vel_cmd_body_frame", 1);
     pwm_publisher = nh->advertise<airsim_ros::RotorPWM>("airsim_node/drone_1/rotor_pwm_cmd", 1);
     
-    // takeoff_client.call(takeoff); //起飞
-    // land_client.call(land); //降落
-    // reset_client.call(reset); //重置
 
     ros::spin();
 }

@@ -1,6 +1,6 @@
 <launch>
 
-    <!-- <include file="$(find fast_lio)/launch/mapping_marsim.launch"/> -->
+    <include file="$(find fast_lio)/launch/mapping_marsim.launch"/>
     
     <node pkg ="path_sender" name ="path_sender" type ="path_sender" output = "screen"/>
 

@@ -20,7 +20,8 @@ find_package(catkin REQUIRED
 
 ## Find system libraries
 find_package(Eigen3 REQUIRED)
-find_package(OpenCV REQUIRED)
+set(OpenCV_DIR /usr/lib/x86_64-linux-gnu/cmake/opencv4/)
+find_package(OpenCV 4.2 REQUIRED)
 find_package(Boost REQUIRED)
 
 ###################################
