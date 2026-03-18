@@ -321,8 +321,17 @@ void cmdCallback(const ros::TimerEvent &e)
   pos_cmd.jerk.x = jer(0);
   pos_cmd.jerk.y = jer(1);
   pos_cmd.jerk.z = jer(2);
-  pos_cmd.yaw = first_yaw_;
+
+
+  // pos_cmd.yaw = first_yaw_;
+  yaw_yawdot = calculate_yaw(t_cur, pos, (time_now - time_last).toSec()); //pos_cmd.yaw_dot = yaw_yawdot.second
+  pos_cmd.yaw = yaw_yawdot.first;
+  pos_cmd.yaw_dot = yaw_yawdot.second;
+
   position_cmd_pub.publish(pos_cmd);
+
+  // 如果 PositionCommand 消息有 yaw_dot 字段，也一并赋值
+  // pos_cmd.yaw_dot = yaw_yawdot.second;
 
   // quadrotor_msgs::PositionCommand pos_cmd;
   // pos_cmd.header.stamp = time_now;

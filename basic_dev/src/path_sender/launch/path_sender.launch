@@ -1,0 +1,4 @@
+<launch>
+    <param name = "yaml_path" type = "string" value = "$(path_sender)/config/paths.yaml" />
+    <node pkg ="path_sender" name ="path_sender" type ="path_sender" output = "screen"/>
+</launch>

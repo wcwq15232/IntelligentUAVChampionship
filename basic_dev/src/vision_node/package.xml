@@ -68,6 +68,9 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
+  <depend>message_filters</depend>
+  <build_depend>nav_msgs</build_depend>
+  <exec_depend>nav_msgs</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

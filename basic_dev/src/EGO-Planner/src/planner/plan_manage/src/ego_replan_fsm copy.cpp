@@ -1007,12 +1007,9 @@ namespace ego_planner
 
 		flag_points_subd_ = true;
 
-		while (ros::ok() && exec_state_ != FSM_EXEC_STATE::WAIT_TARGET) {
-			ros::spinOnce();
-			ros::Duration(0.001).sleep();
-		}
-
-		have_trigger_ = true;
+		ros::spinOnce();
+        ros::Duration(0.001).sleep();
+		
 
 		readGivenWpsAndPlan();
 

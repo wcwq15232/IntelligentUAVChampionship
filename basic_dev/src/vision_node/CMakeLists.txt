@@ -4,6 +4,7 @@ project(vision_node)
 
 set(OpenCV_DIR /usr/lib/x86_64-linux-gnu/cmake/opencv4/)
 find_package(OpenCV 4.2 REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
   airsim_ros
@@ -13,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   cv_bridge
   sensor_msgs
+  message_filters
 )
 
 catkin_package(
@@ -27,6 +29,7 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 
