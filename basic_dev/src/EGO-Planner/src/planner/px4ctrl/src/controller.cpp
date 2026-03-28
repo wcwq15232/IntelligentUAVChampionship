@@ -397,7 +397,6 @@ if (cnt < 100)
 	torque << u.roll_rate, u.pitch_rate, u.yaw_rate;
 
 	airsim_ros::RotorPWM pwm;
-	airsim_ros::RotorPWM pwm;
 	airsim_ros::VelCmd vel_cmd;
 	pwm = computePWM(u.thrust, torque);
 	
