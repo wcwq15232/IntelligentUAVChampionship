@@ -77,7 +77,7 @@ private:
         {260.547, -414.272, 2.46838}
     };
 
-    
+
 
 public:
     ros::Subscriber initial_pose_suber, end_pose_suber, gps_pose_suber; // gps数据

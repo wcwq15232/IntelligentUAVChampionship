@@ -48,7 +48,7 @@ catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS message_runtime roscpp std_msgs # nodelet 
 )
-find_package(OpenCV 4)
+find_package(OpenCV4 )
 
 include_directories(include ${catkin_INCLUDE_DIRS}  ${OpenCv_INCLUDE_DIRS})
 

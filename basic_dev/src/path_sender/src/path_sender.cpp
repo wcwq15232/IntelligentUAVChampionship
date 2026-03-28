@@ -76,12 +76,12 @@ PathSender::PathSender(ros::NodeHandle *nh)
 {  
 
     POintSet();
-    paths=loadPathsFromYAML(std::string("/home/zyx/IntelligentUAVChampionship/basic_dev/src/path_sender/config/paths.yaml"));
+    paths=loadPathsFromYAML(std::string("/home/adobe/IntelligentUAVChampionship/basic_dev/src/path_sender/config/paths.yaml"));
     //无人机信息通过如下命令订阅，当收到消息时自动回调对应的函数
     initial_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/initial_pose", 1, std::bind(&PathSender::initial_pose_cb, this, std::placeholders::_1));//状态真值，用于赛道一
     end_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/end_goal", 1, std::bind(&PathSender::end_pose_cb, this, std::placeholders::_1));//状态真值，用于赛道一
     gps_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/drone_1/gps", 1, std::bind(&PathSender::gps_pose_cb, this, std::placeholders::_1));
-    timer = nh->createTimer(ros::Duration(1.0),&PathSender::timeCB,this);
+     timer = nh->createTimer(ros::Duration(1.0),&PathSender::timeCB,this);
 
     waypoint_publisher = nh->advertise<path_sender::WayPoints>("/waypoints", 1);
     edited_gps_publisher = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("/airsim_node/drone_1/edited_gps", 1);
@@ -100,7 +100,7 @@ void PathSender::initial_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg
   if(!initial_num_get)
   for(int i=1;i<=12;i++)
   {
-    if(abs(msg->pose.position.x - station[i].x) <5)
+    if(abs(msg->pose.position.x -station[i].x) <5)
     {
       initial_num = i;
       initial_num_get = true;
@@ -185,7 +185,7 @@ void PathSender::timeCB(const ros::TimerEvent& event)
     {
       if(initial_num_get && end_num_get)
       {
-          path = paths[initial_num-1];//将起点到第一个转运站的路径加入
+          path= paths[initial_num-1];//将起点到第一个转运站的路径加入
           path.emplace_back(Transit_hub[initial_num]);//中枢入口
           path.emplace_back(Transit_hub[end_num]);//中枢出口
           std::vector<geometry_msgs::Point> temp_path=paths[end_num-1];

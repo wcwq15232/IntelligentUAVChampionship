@@ -16,9 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen3 REQUIRED)
 # find_package(PCL 1.7 REQUIRED) #to help find Eigen
 
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
-
 # Generate messages in the 'msg' folder
 add_message_files(
   FILES

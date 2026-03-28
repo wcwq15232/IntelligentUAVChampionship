@@ -333,86 +333,40 @@ void Controller::publish_ctrl(const Controller_Output_t& u, const ros::Time& sta
 
     rotationMatrix = tran * rotationMatrix * tran;
     Eigen::Vector3d rotatedPoint = rotationMatrix.inverse() * originalPoint;
-	// if (cnt < 100)
-	// 	{
-	// 		std::cout << "here" << std::endl;
-	// 		airsim_ros::RotorPWM pwm;
-	// 		pwm.rotorPWM0 = 0.178087130188 + 0.03;
-	// 		pwm.rotorPWM1 = 0.178087130188 + 0.03;
-	// 		pwm.rotorPWM2 = 0.178087130188 + 0.03;
-	// 		pwm.rotorPWM3 = 0.178087130188 + 0.03;
-	// 		ctrl_PWM_pub.publish(pwm);
-	// 		cnt++;
-	// 		return;
-	// 	}
-	// 	else if (cnt >= 100&& cnt < 180)
-	// 	{
-	// 		std::cout << "here" << std::endl;
-	// 		airsim_ros::RotorPWM pwm;
-	// 		pwm.rotorPWM0 = 0.178087130188 - 0.03;
-	// 		pwm.rotorPWM1 = 0.178087130188 - 0.03;
-	// 		pwm.rotorPWM2 = 0.178087130188 - 0.03;
-	// 		pwm.rotorPWM3 = 0.178087130188 - 0.03;
-	// 		ctrl_PWM_pub.publish(pwm);
-	// 		cnt++;
-	// 		return;
-	// 	}
-	// 	else if (!is_init)
-	// 	{
-	// 		airsim_ros::RotorPWM pwm;
-	// 		pwm.rotorPWM0 = 0.178087130188;
-	// 		pwm.rotorPWM1 = 0.178087130188;
-	// 		pwm.rotorPWM2 = 0.178087130188;
-	// 		pwm.rotorPWM3 = 0.178087130188;
-	// 		ctrl_PWM_pub.publish(pwm);
-	// 		return;
-	// 	}	
-	if (cnt < 100)
-		{
-			std::cout << "here" << std::endl;
-
-			airsim_ros::VelCmd vel_cmd;
-			vel_cmd.yawRate = 0;//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
-			vel_cmd.vx = 0;
-			vel_cmd.vy = 0;
-			vel_cmd.vz = 1;	
-			vel_cmd.va = 2;	
-			vel_cmd.stop = 0;
-			vel_pub.publish(vel_cmd);
-
-			cnt++;
-			return;
-		}
-		else if (cnt >= 100&& cnt < 180)
-		{
-			std::cout << "here" << std::endl;
-			
-			airsim_ros::VelCmd vel_cmd;
-			vel_cmd.yawRate = 0;//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
-			vel_cmd.vx = 0;
-			vel_cmd.vy = 0;
-			vel_cmd.vz = 0.5;	
-			vel_cmd.va = 6;	
-			vel_cmd.stop = 0;
-			vel_pub.publish(vel_cmd);
-
-			cnt++;
-			return;
-		}
-		else if (!is_init)
-		{
-			
-			airsim_ros::VelCmd vel_cmd;
-			vel_cmd.yawRate = 0;//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
-			vel_cmd.vx = 0;
-			vel_cmd.vy = 0;
-			vel_cmd.vz = 0;	
-			vel_cmd.va = 6;	
-			vel_cmd.stop = 1;
-			vel_pub.publish(vel_cmd);
-
-			return;
-		}	
+if (cnt < 100)
+	{
+		std::cout << "here" << std::endl;
+		airsim_ros::RotorPWM pwm;
+		pwm.rotorPWM0 = 0.178087130188 + 0.03;
+		pwm.rotorPWM1 = 0.178087130188 + 0.03;
+		pwm.rotorPWM2 = 0.178087130188 + 0.03;
+		pwm.rotorPWM3 = 0.178087130188 + 0.03;
+		ctrl_PWM_pub.publish(pwm);
+		cnt++;
+		return;
+	}
+	else if (cnt >= 100&& cnt < 180)
+	{
+		std::cout << "here" << std::endl;
+		airsim_ros::RotorPWM pwm;
+		pwm.rotorPWM0 = 0.178087130188 - 0.03;
+		pwm.rotorPWM1 = 0.178087130188 - 0.03;
+		pwm.rotorPWM2 = 0.178087130188 - 0.03;
+		pwm.rotorPWM3 = 0.178087130188 - 0.03;
+		ctrl_PWM_pub.publish(pwm);
+		cnt++;
+		return;
+	}
+	else if (!is_init)
+	{
+		airsim_ros::RotorPWM pwm;
+		pwm.rotorPWM0 = 0.178087130188;
+		pwm.rotorPWM1 = 0.178087130188;
+		pwm.rotorPWM2 = 0.178087130188;
+		pwm.rotorPWM3 = 0.178087130188;
+		ctrl_PWM_pub.publish(pwm);
+		return;
+	}	
 	float yaw = q.toRotationMatrix().eulerAngles(2,1,0)[0];
 	float pitch = q.toRotationMatrix().eulerAngles(2,1,0)[1];
 	// msg.header.stamp = stamp;
@@ -428,29 +382,18 @@ void Controller::publish_ctrl(const Controller_Output_t& u, const ros::Time& sta
 	Eigen::Vector3d torque;
 	torque << u.roll_rate, u.pitch_rate, u.yaw_rate;
 
-	// airsim_ros::RotorPWM pwm;
+	airsim_ros::RotorPWM pwm;
 	airsim_ros::VelCmd vel_cmd;
-	// pwm = computePWM(u.thrust, torque);
+	pwm = computePWM(u.thrust, torque);
 	
-    // vel_cmd.twist.linear.x =  (-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*(-cos(pitch))-cmd_data.v(2)*sin(pitch);
-	// vel_cmd.twist.linear.y = (cmd_data.v(1)*cos(yaw)+cmd_data.v(0)*sin(yaw));
-	// // std::cout<<"vel_cmd.twist.linear.x"<<vel_cmd.twist.linear.x<<std::endl;
-	// // std::cout<<"vel_cmd.twist.linear.y"<<vel_cmd.twist.linear.y<<std::endl;
-
-	
-	// vel_cmd.twist.linear.z = cmd_data.v(2)*cos(pitch);//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
-    // vel_cmd.twist.linear.x = rotatedPoint(0)*1.5;
-	// vel_cmd.twist.linear.y = -rotatedPoint(1)*1.5;
-	// vel_cmd.twist.linear.z = -rotatedPoint(2)*1.5;	
-
-	vel_cmd.yawRate = cmd_data.v(2)*cos(pitch);//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
-    vel_cmd.vx = rotatedPoint(0)*1.5;
-	vel_cmd.vy = -rotatedPoint(1)*1.5;
-	vel_cmd.vz = rotatedPoint(2)*1.5;	
-	cout << vel_cmd.vz << endl;
-	vel_cmd.va = 6;	
-	vel_cmd.stop = 0;
-	// vel_cmd.header = 
+    vel_cmd.twist.linear.x =  (-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*(-cos(pitch))-cmd_data.v(2)*sin(pitch);
+	vel_cmd.twist.linear.y = (cmd_data.v(1)*cos(yaw)+cmd_data.v(0)*sin(yaw));
+	// std::cout<<"vel_cmd.twist.linear.x"<<vel_cmd.twist.linear.x<<std::endl;
+	// std::cout<<"vel_cmd.twist.linear.y"<<vel_cmd.twist.linear.y<<std::endl;
+	vel_cmd.twist.linear.z = cmd_data.v(2)*cos(pitch);//(-cmd_data.v(0)*cos(yaw)+cmd_data.v(1)*sin(yaw))*cos(pitch);
+    vel_cmd.twist.linear.x = rotatedPoint(0)*1.5;
+	vel_cmd.twist.linear.y = -rotatedPoint(1)*1.5;
+	vel_cmd.twist.linear.z = -rotatedPoint(2)*1.5;	
 	// if (cnt < 100)
 	// {
 	// 	vel_cmd.twist.linear.z = -0.8;
@@ -459,10 +402,10 @@ void Controller::publish_ctrl(const Controller_Output_t& u, const ros::Time& sta
 	//     vel_pub.publish(vel_cmd);
 	// 	cnt++;
 	// }
-	// ctrl_PWM_pub.publish(pwm);
+	ctrl_PWM_pub.publish(pwm);
 		//std::cout<<"vel_cmd.twist.linear.z"<<vel_cmd.twist.linear.z<<std::endl;
 
-	vel_pub.publish(vel_cmd);
+	//vel_pub.publish(vel_cmd);
 
 }
 void Controller::pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg)

@@ -9,9 +9,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 find_package(Eigen3 REQUIRED)
 find_package(PCL 1.7 REQUIRED)
 
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
-
 find_package(catkin REQUIRED COMPONENTS
   airsim_ros
   roscpp
@@ -28,7 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
   path_sender
   tf2_ros
 )
-
+find_package(OpenCV REQUIRED)
 # catkin_package(CATKIN_DEPENDS message_runtime)
 catkin_package(
  INCLUDE_DIRS include
@@ -54,6 +51,7 @@ add_executable(ego_planner_node
   )
 target_link_libraries(ego_planner_node 
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
   )
 #add_dependencies(ego_planner_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 

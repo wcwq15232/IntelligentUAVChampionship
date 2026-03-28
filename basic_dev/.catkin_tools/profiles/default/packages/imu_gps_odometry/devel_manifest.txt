@@ -1,0 +1,5 @@
+imu_gps_odometry
+/home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/.private/imu_gps_odometry/lib/pkgconfig/imu_gps_odometry.pc /home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/lib/pkgconfig/imu_gps_odometry.pc
+/home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/.private/imu_gps_odometry/lib/imu_gps_odometry/imu_gps_odometry /home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/lib/imu_gps_odometry/imu_gps_odometry
+/home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/.private/imu_gps_odometry/share/imu_gps_odometry/cmake/imu_gps_odometryConfig.cmake /home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/share/imu_gps_odometry/cmake/imu_gps_odometryConfig.cmake
+/home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/.private/imu_gps_odometry/share/imu_gps_odometry/cmake/imu_gps_odometryConfig-version.cmake /home/adobe/dev/IntelligentUAVChampionship/basic_dev/devel/share/imu_gps_odometry/cmake/imu_gps_odometryConfig-version.cmake

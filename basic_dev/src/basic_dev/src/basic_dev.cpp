@@ -19,13 +19,14 @@ BasicDev::BasicDev(ros::NodeHandle *nh)
     front_left_img = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0));
     front_right_img = cv::Mat(480, 640, CV_8UC3, cv::Scalar(0));
 
+    takeoff.request.waitOnLastTask = 1;
+    land.request.waitOnLastTask = 1;
+
     // 使用publisher发布速度指令需要定义 Velcmd , 并赋予相应的值后，将他publish（）出去
-    velcmd.stop = 0;
-    velcmd.yawRate = 0;
-    velcmd.va = 0;
-    velcmd.vx = 0;
-    velcmd.vy = 0;
-    velcmd.vz = 0;
+    velcmd.twist.angular.z = 0;//z方向角速度(yaw, deg)
+    velcmd.twist.linear.x = 0; //x方向线速度(m/s)
+    velcmd.twist.linear.y = 0;//y方向线速度(m/s)
+    velcmd.twist.linear.z = 0; //z方向线速度(m/s)
 
     pwm_cmd.rotorPWM0 = 0.1;
     pwm_cmd.rotorPWM1 = 0.1;
@@ -39,7 +40,10 @@ BasicDev::BasicDev(ros::NodeHandle *nh)
     lidar_suber = nh->subscribe<sensor_msgs::PointCloud2>("airsim_node/drone_1/lidar", 1, std::bind(&BasicDev::lidar_cb, this, std::placeholders::_1));//imu数据
     front_left_view_suber = it->subscribe("airsim_node/drone_1/front_left/Scene", 1, std::bind(&BasicDev::front_left_view_cb, this,  std::placeholders::_1));
     front_right_view_suber = it->subscribe("airsim_node/drone_1/front_right/Scene", 1, std::bind(&BasicDev::front_right_view_cb, this,  std::placeholders::_1));
-
+    //通过这两个服务可以调用模拟器中的无人机起飞和降落命令
+    takeoff_client = nh->serviceClient<airsim_ros::Takeoff>("/airsim_node/drone_1/takeoff");
+    land_client = nh->serviceClient<airsim_ros::Takeoff>("/airsim_node/drone_1/land");
+    reset_client = nh->serviceClient<airsim_ros::Reset>("/airsim_node/reset");
     //通过publisher实现对无人机的控制
     vel_publisher = nh->advertise<airsim_ros::VelCmd>("airsim_node/drone_1/vel_cmd_body_frame", 1);
     pwm_publisher = nh->advertise<airsim_ros::RotorPWM>("airsim_node/drone_1/rotor_pwm_cmd", 1);
