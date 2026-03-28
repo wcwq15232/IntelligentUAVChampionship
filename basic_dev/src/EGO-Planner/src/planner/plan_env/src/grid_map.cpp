@@ -1,5 +1,5 @@
 #include "plan_env/grid_map.h"
-
+#include <opencv2/opencv.hpp>
 void GridMap::initMap(ros::NodeHandle &nh)
 {
   node_ = nh;

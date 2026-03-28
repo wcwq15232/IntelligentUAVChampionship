@@ -1,0 +1,5 @@
+EGO-Planner/src/uav_simulator/fake_drone
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/poscmd_2_odom/share/poscmd_2_odom/cmake/poscmd_2_odomConfig.cmake /home/zyx/IntelligentUAVChampionship/basic_dev/devel/share/poscmd_2_odom/cmake/poscmd_2_odomConfig.cmake
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/poscmd_2_odom/share/poscmd_2_odom/cmake/poscmd_2_odomConfig-version.cmake /home/zyx/IntelligentUAVChampionship/basic_dev/devel/share/poscmd_2_odom/cmake/poscmd_2_odomConfig-version.cmake
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/poscmd_2_odom/lib/poscmd_2_odom/poscmd_2_odom /home/zyx/IntelligentUAVChampionship/basic_dev/devel/lib/poscmd_2_odom/poscmd_2_odom
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/poscmd_2_odom/lib/pkgconfig/poscmd_2_odom.pc /home/zyx/IntelligentUAVChampionship/basic_dev/devel/lib/pkgconfig/poscmd_2_odom.pc

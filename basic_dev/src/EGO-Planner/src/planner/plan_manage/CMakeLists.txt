@@ -29,7 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   path_sender
   tf2_ros
 )
-
+find_package(OpenCV REQUIRED)
 # catkin_package(CATKIN_DEPENDS message_runtime)
 catkin_package(
  INCLUDE_DIRS include
@@ -55,6 +55,7 @@ add_executable(ego_planner_node
   )
 target_link_libraries(ego_planner_node 
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
   )
 #add_dependencies(ego_planner_node ${${PROJECT_NAME}_EXPORTED_TARGETS})
 

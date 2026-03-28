@@ -35,6 +35,10 @@ private:
     ros::CallbackQueue go_queue;
     ros::CallbackQueue front_img_queue;
 
+    // 调用服务前需要定义特定的调用参数
+    airsim_ros::Takeoff takeoff;
+    airsim_ros::Land land;
+    airsim_ros::Reset reset;
 
     // 使用publisher发布速度指令需要定义 Velcmd , 并赋予相应的值后，将他publish（）出去
     airsim_ros::VelCmd velcmd;
@@ -48,13 +52,14 @@ private:
     image_transport::Subscriber front_left_view_suber;
     image_transport::Subscriber front_right_view_suber;
 
+    //通过这两个服务可以调用模拟器中的无人机起飞和降落命令
+    ros::ServiceClient takeoff_client;
+    ros::ServiceClient land_client;
+    ros::ServiceClient reset_client;
+
     //通过publisher实现对无人机的控制
     ros::Publisher vel_publisher;
     ros::Publisher pwm_publisher;
-
-    // ros::Publisher front_left_view_suber;
-    // ros::Publisher front_right_view_suber;
-
 
     void pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
     void gps_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
