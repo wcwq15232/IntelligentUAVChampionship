@@ -9,7 +9,6 @@
 
 bool end_flag = false;
 bool start_flag = false;
-double last_start_pose_x = -1;
 double last_end_pose_x = -1;
 
 int main(int argc, char **argv)
@@ -70,7 +69,7 @@ std::vector<std::vector<geometry_msgs::Point>> loadPathsFromYAML(const std::stri
 void PathSender::POintSet()
 {
     for (int i = 0; i < 13; ++i)
-    {
+    { 
         station[i].x = station_[i].x;
         station[i].y = station_[i].y;
         station[i].z = station_[i].z + 0.2;
@@ -88,17 +87,18 @@ PathSender::PathSender(ros::NodeHandle *nh)
 {
 
     POintSet();
-    nh.param("yaml_path", yaml_path, "/home/zyx/IntelligentUAVChampionship/basic_dev/src/path_sender/config/paths.yaml");
+    nh->param("yaml_path", yaml_path, std::string("/home/zyx/IntelligentUAVChampionship/basic_dev/src/path_sender/config/paths.yaml"));
 
     paths = loadPathsFromYAML(std::string("/home/zyx/IntelligentUAVChampionship/basic_dev/src/path_sender/config/paths.yaml"));
     // 无人机信息通过如下命令订阅，当收到消息时自动回调对应的函数
     initial_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/initial_pose", 1, std::bind(&PathSender::initial_pose_cb, this, std::placeholders::_1)); // 状态真值，用于赛道一
     end_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/end_goal", 1, std::bind(&PathSender::end_pose_cb, this, std::placeholders::_1));             // 状态真值，用于赛道一
     gps_pose_suber = nh->subscribe<geometry_msgs::PoseStamped>("/airsim_node/drone_1/gps", 1, std::bind(&PathSender::gps_pose_cb, this, std::placeholders::_1));
-     timer = nh->createTimer(ros::Duration(2.0),&PathSender::timeCB,this);
+    timer = nh->createTimer(ros::Duration(2.0),&PathSender::timeCB,this);
 
     waypoint_publisher = nh->advertise<path_sender::WayPoints>("/waypoints", 1);
     edited_gps_publisher = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("/airsim_node/drone_1/edited_gps", 1);
+    path_visualization_pub = nh->advertise<nav_msgs::Path>("/path_visualization", 1);
 
     ros::spin();
 }
@@ -217,20 +217,52 @@ void PathSender::send_path()
     geometry_msgs::Point tmp_point;
     tmp_point.x = station[end_num].x;
     tmp_point.y = station[end_num].y;
-    tmp_point.z = station[end_num].z + 3;
+    tmp_point.z = station[end_num].z + 2.5;
     path.emplace_back(tmp_point);
-    path_sender::WayPoints path;
-    path.points = this->path;
-    waypoint_publisher.publish(path);
+    path_sender::WayPoints path_msg;
+    path_msg.points = this->path;
+    waypoint_publisher.publish(path_msg);
+    
+    // 发布Rviz可视化消息
+    nav_msgs::Path path_visualization;
+    path_visualization.header.stamp = ros::Time::now();
+    path_visualization.header.frame_id = "odom";
+    
+    for (const auto& point : this->path) {
+        geometry_msgs::PoseStamped pose;
+        pose.header.stamp = ros::Time::now();
+        pose.header.frame_id = "odom";
+        pose.pose.position = point;
+        pose.pose.orientation.w = 1.0;
+        path_visualization.poses.push_back(pose);
+    }
+    
+    path_visualization_pub.publish(path_visualization);
 }
 
 void PathSender::timeCB(const ros::TimerEvent &event)
 {
     if (end_flag == start_flag)
     {
-        path_sender::WayPoints path;
-        path.points = this->path;
-        waypoint_publisher.publish(path);
+        path_sender::WayPoints path_msg;
+        path_msg.points = this->path;
+        waypoint_publisher.publish(path_msg);
+        
+        // 发布Rviz可视化消息
+        nav_msgs::Path path_visualization;
+        path_visualization.header.stamp = ros::Time::now();
+        path_visualization.header.frame_id = "odom";
+        
+        for (const auto& point : this->path) {
+            geometry_msgs::PoseStamped pose;
+            pose.header.stamp = ros::Time::now();
+            pose.header.frame_id = "odom";  
+            pose.pose.position = point;
+            pose.pose.orientation.w = 1.0;
+            path_visualization.poses.push_back(pose);
+        }
+        
+        path_visualization_pub.publish(path_visualization);
     }
 }
 

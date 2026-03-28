@@ -77,6 +77,9 @@ namespace ego_planner
 
 		have_trigger_ = !flag_realworld_experiment_;
 		no_replan_thresh_ = 2.0 * emergency_time_ * planner_manager_->pp_.max_vel_;
+		
+		last_end_vel = Eigen::Vector3d::Zero();
+		max_acc_ = planner_manager_->pp_.max_acc_;
 
 		/* callback */
 		exec_timer_ = nh.createTimer(ros::Duration(0.01), &EGOReplanFSM::execFSMCallback, this);
@@ -219,7 +222,18 @@ namespace ego_planner
 						wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
 					else
 						wp = wps_[wpt_id_];
-				} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+					
+					double distance_to_wp = (odom_pos_ - wp).norm();
+					double time_to_wp = distance_to_wp / std::max(odom_vel_.norm(), 1.0);
+					if (distance_to_wp < 5.0 || time_to_wp < 1.5)
+					{
+						continue;
+					}
+					else
+					{
+						break;
+					}
+				} while (wpt_id_ < waypoint_num_ - 1);
 
 				planNextWaypoint(wp);
 			}
@@ -252,14 +266,25 @@ namespace ego_planner
 					std::cout << "++++++++++++++++++++++++++++++n\n\n\n\n\n\n\n\n\n\n++++++++++++++++++++++++++++++\n";
 
 					Eigen::Vector3d wp;
-					do
+				do
+				{
+					wpt_id_++;
+					if (flag_gps_init_)
+						wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
+					else
+						wp = wps_[wpt_id_];
+					
+					double distance_to_wp = (odom_pos_ - wp).norm();
+					double time_to_wp = distance_to_wp / std::max(odom_vel_.norm(), 1.0);
+					if (distance_to_wp < 5.0 || time_to_wp < 1.5)
 					{
-						wpt_id_++;
-						if (flag_gps_init_)
-							wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
-						else
-							wp = wps_[wpt_id_];
-					} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+						continue;
+					}
+					else
+					{
+						break;
+					}
+				} while (wpt_id_ < waypoint_num_ - 1);
 
 					planNextWaypoint(wp);
 				}
@@ -282,7 +307,18 @@ namespace ego_planner
 						wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
 					else
 						wp = wps_[wpt_id_];
-				} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+					
+					double distance_to_wp = (odom_pos_ - wp).norm();
+					double time_to_wp = distance_to_wp / std::max(odom_vel_.norm(), 1.0);
+					if (distance_to_wp < 5.0 || time_to_wp < 1.5)
+					{
+						continue;
+					}
+					else
+					{
+						break;
+					}
+				} while (wpt_id_ < waypoint_num_ - 1);
 
 				planNextWaypoint(wp);
 			}
@@ -343,7 +379,6 @@ namespace ego_planner
 			continously_called_times_ = 1;
 
 		static string state_str[8] = {"INIT", "WAIT_TARGET", "GEN_NEW_TRAJ", "REPLAN_TRAJ", "EXEC_TRAJ", "EMERGENCY_STOP", "SEQUENTIAL_START"};
-		int pre_s = int(exec_state_);
 		exec_state_ = new_state;
 		// cout << "[" + pos_call + "]"
 		//      << "Drone:" << planner_manager_->pp_.drone_id << ", from " + state_str[pre_s] + " to " + state_str[int(new_state)] << endl;
@@ -636,16 +671,39 @@ namespace ego_planner
 	{
 		bool success = false;
 		std::vector<Eigen::Vector3d> one_pt_wps;
-		// Eigen::Vector3d end_vel=((next_wp-last_wp)/(next_wp-last_wp).norm())*(odom_vel_.norm()+((20-odom_vel_.norm())/2.0));
-		Eigen::Vector3d end_vel = ((next_wp - last_wp) / (next_wp - last_wp).norm()) * (odom_vel_.norm() + (8 - odom_vel_.norm()) / 4);
-		if (end_vel.norm() > 8)
+		
+		Eigen::Vector3d direction = (next_wp - odom_pos_).normalized();
+		double distance = (next_wp - odom_pos_).norm();
+		
+		double current_vel_mag = odom_vel_.norm();
+		
+		double max_end_vel = std::min(10.0, std::sqrt(2.0 * max_acc_ * distance));
+		double desired_end_vel = std::min(max_end_vel, current_vel_mag * 1.2);
+		desired_end_vel = std::max(desired_end_vel, 3.0);
+		
+		Eigen::Vector3d end_vel = direction * desired_end_vel;
+		
+		double max_vel_change = 5.75;
+		double current_end_vel_mag = end_vel.norm();
+		double last_end_vel_mag = last_end_vel.norm();
+		if (last_end_vel_mag > 0.1 && std::abs(current_end_vel_mag - last_end_vel_mag) > max_vel_change)
 		{
-			end_vel = (end_vel / end_vel.norm()) * 8;
+			double scale = (last_end_vel_mag + max_vel_change) / current_end_vel_mag;
+			end_vel = end_vel * scale;
 		}
+		
+		if (end_vel.norm() > 10.0)
+		{
+			end_vel = (end_vel / end_vel.norm()) * 10.0;
+		}
+		
 		std::cout << "odom_vel_: " << odom_vel_.norm() << std::endl;
+		std::cout << "distance: " << distance << std::endl;
 		std::cout << "end_vel: " << end_vel.norm() << std::endl;
+		std::cout << "last_end_vel: " << last_end_vel.norm() << std::endl;
 
 		last_wp = next_wp;
+		last_end_vel = end_vel;
 
 		one_pt_wps.push_back(next_wp);
 		success = planner_manager_->planGlobalTrajWaypoints(
@@ -659,7 +717,6 @@ namespace ego_planner
 		{
 			final_goal_ = next_wp;
 
-			/*** display ***/
 			constexpr double step_size_t = 0.1;
 			int i_end = floor(planner_manager_->traj_.global_traj.duration / step_size_t);
 			vector<Eigen::Vector3d> gloabl_traj(i_end);
@@ -671,13 +728,12 @@ namespace ego_planner
 			have_target_ = true;
 			have_new_target_ = true;
 
-			/*** FSM ***/
 			if (exec_state_ != WAIT_TARGET)
 			{
+				ros::Duration(0.05).sleep();
 				changeFSMExecState(REPLAN_TRAJ, "TRIG");
 			}
 
-			// visualization_->displayGoalPoint(final_goal_, Eigen::Vector4d(1, 0, 0, 1), 0.3, 0);
 			visualization_->displayGlobalPathList(gloabl_traj, 0.1, 0);
 		}
 		else
@@ -1000,7 +1056,7 @@ namespace ego_planner
 		{
 			waypoints_[i][0] = msg.points[i].x;
 			waypoints_[i][1] = msg.points[i].y;
-			waypoints_[i][2] = msg.points[i].z + 0.32;
+			waypoints_[i][2] = msg.points[i].z + 0.31;
 		}
 
 		std::cout << "Received " << waypoint_num_ << " waypoints." << std::endl;

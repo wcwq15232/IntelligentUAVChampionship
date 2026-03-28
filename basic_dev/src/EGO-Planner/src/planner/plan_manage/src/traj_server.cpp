@@ -42,6 +42,12 @@ double time_forward_;
 
 Eigen::VectorXf X_des, X_real;
 
+static Eigen::Vector3d last_jerk_ = Eigen::Vector3d::Zero();
+static const double JERK_FILTER_ALPHA = 0.8;  // 低通滤波系数
+static const double MAX_JERK_CMD = 2.0;        // 硬限幅值 (m/s³)
+
+
+
 void heartbeatCallback(std_msgs::EmptyPtr msg)
 {
   heartbeat_time_ = ros::Time::now();
@@ -297,6 +303,7 @@ void cmdCallback(const ros::TimerEvent &e)
     vel = traj_->getVel(t_cur);
     acc = traj_->getAcc(t_cur);
     jer = traj_->getJer(t_cur);
+    
   }
   else
   {

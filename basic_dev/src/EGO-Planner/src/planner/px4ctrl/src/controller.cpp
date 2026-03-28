@@ -545,7 +545,7 @@ Eigen::Vector3d Controller::computeRobustBodyXAxis(
 
 	if (almostZero(x_B.norm()))
 	{
-		std::cout << "here" << std::endl;
+		// std::cout << "here" << std::endl;
 		// if cross(y_C, z_B) == 0, they are collinear =>
 		// every x_B lies automatically in the x_C - z_C plane
 

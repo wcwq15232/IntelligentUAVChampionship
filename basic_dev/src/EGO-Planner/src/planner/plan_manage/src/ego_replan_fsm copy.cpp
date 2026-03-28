@@ -219,7 +219,7 @@ namespace ego_planner
 						wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
 					else
 						wp = wps_[wpt_id_];
-				} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+				} while ((odom_pos_ - wp).norm() < 10.0 && wpt_id_ < waypoint_num_ - 1);
 
 				planNextWaypoint(wp);
 			}
@@ -259,7 +259,7 @@ namespace ego_planner
 							wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
 						else
 							wp = wps_[wpt_id_];
-					} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+					} while ((odom_pos_ - wp).norm() < 10.0 && wpt_id_ < waypoint_num_ - 1);
 
 					planNextWaypoint(wp);
 				}
@@ -270,7 +270,7 @@ namespace ego_planner
 			}
 			else if ((target_type_ == TARGET_TYPE::PRESET_TARGET || target_type_ == TARGET_TYPE::SUBED_POINTS) &&
 					 (wpt_id_ < waypoint_num_ - 1) &&
-					 (final_goal_ - pos).norm() < 8.0) // case 2: assign the next waypoint
+					 (final_goal_ - pos).norm() < 10.0) // case 2: assign the next waypoint
 			{
 				std::cout << "++++++++++++++++++++++++++++++n\n\n\n\n\n\n\n\n\n\n++++++++++++++++++++++++++++++\n";
 
@@ -282,7 +282,7 @@ namespace ego_planner
 						wp = transformWaypointToA(wps_[wpt_id_], odom_, gps_pos_);
 					else
 						wp = wps_[wpt_id_];
-				} while ((odom_pos_ - wp).norm() < 8.0 && wpt_id_ < waypoint_num_ - 1);
+				} while ((odom_pos_ - wp).norm() < 10.0 && wpt_id_ < waypoint_num_ - 1);
 
 				planNextWaypoint(wp);
 			}
@@ -637,10 +637,10 @@ namespace ego_planner
 		bool success = false;
 		std::vector<Eigen::Vector3d> one_pt_wps;
 		// Eigen::Vector3d end_vel=((next_wp-last_wp)/(next_wp-last_wp).norm())*(odom_vel_.norm()+((20-odom_vel_.norm())/2.0));
-		Eigen::Vector3d end_vel = ((next_wp - last_wp) / (next_wp - last_wp).norm()) * (odom_vel_.norm() + (8 - odom_vel_.norm()) / 4);
-		if (end_vel.norm() > 8)
+		Eigen::Vector3d end_vel = ((next_wp - last_wp) / (next_wp - last_wp).norm()) * (odom_vel_.norm() + (10 - odom_vel_.norm()) / 4);
+		if (end_vel.norm() > 10)
 		{
-			end_vel = (end_vel / end_vel.norm()) * 8;
+			end_vel = (end_vel / end_vel.norm()) * 10;
 		}
 		std::cout << "odom_vel_: " << odom_vel_.norm() << std::endl;
 		std::cout << "end_vel: " << end_vel.norm() << std::endl;
@@ -1000,7 +1000,7 @@ namespace ego_planner
 		{
 			waypoints_[i][0] = msg.points[i].x;
 			waypoints_[i][1] = msg.points[i].y;
-			waypoints_[i][2] = msg.points[i].z + 0.32;
+			waypoints_[i][2] = msg.points[i].z + 0.3;
 		}
 
 		std::cout << "Received " << waypoint_num_ << " waypoints." << std::endl;

@@ -8,5 +8,8 @@
 
     <include file="$(find ego_planner)/launch/single_drone.launch"/>
 
+    <!-- Pose GT Path Publisher Node -->
+    <node pkg="path_sender" name="pose_gt_path_publisher" type="pose_gt_processor.py" output="screen"/>
+
 </launch>
 

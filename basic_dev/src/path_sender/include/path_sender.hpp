@@ -26,6 +26,7 @@
 #include <geometry_msgs/Point.h> // Include the necessary header for geometry_msgs
 #include <path_sender/WayPoints.h>
 #include <string>
+#include <nav_msgs/Path.h>
 #endif
 
 class PathSender
@@ -86,7 +87,7 @@ public:
     void end_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
     void gps_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
     void POintSet();
-    ros::Publisher waypoint_publisher, edited_gps_publisher;
+    ros::Publisher waypoint_publisher, edited_gps_publisher, path_visualization_pub;
     geometry_msgs::Point station[13];
     geometry_msgs::Point Transit_hub[13];
     geometry_msgs::Point end_point[13];
