@@ -25,6 +25,8 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <geometry_msgs/Point.h> // Include the necessary header for geometry_msgs
 #include <path_sender/WayPoints.h>
+#include <string>
+#include <nav_msgs/Path.h>
 #endif
 
 class PathSender
@@ -77,7 +79,7 @@ private:
         {260.547, -414.272, 2.46838}
     };
 
-    
+
 
 public:
     ros::Subscriber initial_pose_suber, end_pose_suber, gps_pose_suber; // gps数据
@@ -85,7 +87,7 @@ public:
     void end_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
     void gps_pose_cb(const geometry_msgs::PoseStamped::ConstPtr& msg);
     void POintSet();
-    ros::Publisher waypoint_publisher, edited_gps_publisher;
+    ros::Publisher waypoint_publisher, edited_gps_publisher, path_visualization_pub;
     geometry_msgs::Point station[13];
     geometry_msgs::Point Transit_hub[13];
     geometry_msgs::Point end_point[13];
@@ -93,15 +95,17 @@ public:
     bool end_num_get = false;
     bool path_get  = false;
 
+    std::string yaml_path;
+
     int initial_num, end_num;
     std::vector<geometry_msgs::Point> path;
     PathSender(ros::NodeHandle *nh);
+    void send_path();
     void timeCB(const ros::TimerEvent& event);
     std::vector<std::vector<geometry_msgs::Point>> paths;
     ros::Timer timer;
     ~PathSender();
 };
-
 
 
 

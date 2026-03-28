@@ -1,0 +1,5 @@
+EGO-Planner/src/uav_simulator/local_sensing
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/local_sensing_node/share/local_sensing_node/cmake/local_sensing_nodeConfig-version.cmake /home/zyx/IntelligentUAVChampionship/basic_dev/devel/share/local_sensing_node/cmake/local_sensing_nodeConfig-version.cmake
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/local_sensing_node/share/local_sensing_node/cmake/local_sensing_nodeConfig.cmake /home/zyx/IntelligentUAVChampionship/basic_dev/devel/share/local_sensing_node/cmake/local_sensing_nodeConfig.cmake
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/local_sensing_node/lib/pkgconfig/local_sensing_node.pc /home/zyx/IntelligentUAVChampionship/basic_dev/devel/lib/pkgconfig/local_sensing_node.pc
+/home/zyx/IntelligentUAVChampionship/basic_dev/devel/.private/local_sensing_node/lib/local_sensing_node/pcl_render_node /home/zyx/IntelligentUAVChampionship/basic_dev/devel/lib/local_sensing_node/pcl_render_node

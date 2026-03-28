@@ -46,9 +46,9 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS message_runtime roscpp std_msgs # nodelet 
+  CATKIN_DEPENDS message_runtime roscpp rospy std_msgs # nodelet 
 )
-find_package(OpenCV 4)
+find_package(OpenCV4 )
 
 include_directories(include ${catkin_INCLUDE_DIRS}  ${OpenCv_INCLUDE_DIRS})
 
@@ -58,6 +58,13 @@ target_link_libraries(path_sender yaml-cpp ${catkin_LIBRARIES} ${OpenCv_LIBS})
 
 install(DIRECTORY
   launch
+  scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   # PATTERN ".git" EXCLUDE
+)
+
+# Install Python scripts
+catkin_install_python(PROGRAMS
+  scripts/pose_gt_processor.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

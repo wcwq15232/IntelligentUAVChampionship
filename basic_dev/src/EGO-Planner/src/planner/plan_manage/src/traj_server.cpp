@@ -42,6 +42,12 @@ double time_forward_;
 
 Eigen::VectorXf X_des, X_real;
 
+static Eigen::Vector3d last_jerk_ = Eigen::Vector3d::Zero();
+static const double JERK_FILTER_ALPHA = 0.8;  // 低通滤波系数
+static const double MAX_JERK_CMD = 2.0;        // 硬限幅值 (m/s³)
+
+
+
 void heartbeatCallback(std_msgs::EmptyPtr msg)
 {
   heartbeat_time_ = ros::Time::now();
@@ -164,19 +170,10 @@ std::pair<double, double> calculate_yaw(double t_cur, Eigen::Vector3d &pos, doub
 void publish_cmd(Vector3d p, Vector3d v, Vector3d a, Vector3d j, double y, double yd)
 {
   // Publish velocity command
-  // cmd.twist.linear.x = v(0);  // x方向线速度(m/s)
-  // cmd.twist.linear.y = -v(1);  // y方向线速度(m/s)
-  // cmd.twist.linear.z = -v(2);  // z方向线速度(m/s)
-  // cmd.twist.angular.z = -yd;   // z方向角速度(yaw, deg)
-  airsim_ros::VelCmd cmd;
-  cmd.vx = v(0);
-  cmd.vy = -v(1);
-  cmd.vz = -v(2);
-  cmd.vz = -yd;
-  cmd.va = 8;
-  cmd.stop = 0;
-
-
+  cmd.twist.linear.x = v(0);  // x方向线速度(m/s)
+  cmd.twist.linear.y = -v(1);  // y方向线速度(m/s)
+  cmd.twist.linear.z = -v(2);  // z方向线速度(m/s)
+  cmd.twist.angular.z = -yd;   // z方向角速度(yaw, deg)
   pos_cmd_pub.publish(cmd);
 
   // airsim_ros::RotorPWM msg;
@@ -297,6 +294,7 @@ void cmdCallback(const ros::TimerEvent &e)
     vel = traj_->getVel(t_cur);
     acc = traj_->getAcc(t_cur);
     jer = traj_->getJer(t_cur);
+    
   }
   else
   {
@@ -321,8 +319,17 @@ void cmdCallback(const ros::TimerEvent &e)
   pos_cmd.jerk.x = jer(0);
   pos_cmd.jerk.y = jer(1);
   pos_cmd.jerk.z = jer(2);
-  pos_cmd.yaw = first_yaw_;
+
+
+  // pos_cmd.yaw = first_yaw_;
+  yaw_yawdot = calculate_yaw(t_cur, pos, (time_now - time_last).toSec()); //pos_cmd.yaw_dot = yaw_yawdot.second
+  pos_cmd.yaw = yaw_yawdot.first;
+  pos_cmd.yaw_dot = yaw_yawdot.second;
+
   position_cmd_pub.publish(pos_cmd);
+
+  // 如果 PositionCommand 消息有 yaw_dot 字段，也一并赋值
+  // pos_cmd.yaw_dot = yaw_yawdot.second;
 
   // quadrotor_msgs::PositionCommand pos_cmd;
   // pos_cmd.header.stamp = time_now;

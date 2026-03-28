@@ -51,6 +51,7 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <depend>cv_bridge</depend>
   <depend>yolov11_ros_msgs</depend>
+  <depend>path_sender</depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>roscpp</build_depend>
@@ -67,7 +68,11 @@
   <exec_depend>rospy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <build_depend>tf2_sensor_msgs</build_depend>
 
+  <depend>message_filters</depend>
+  <build_depend>nav_msgs</build_depend>
+  <exec_depend>nav_msgs</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
